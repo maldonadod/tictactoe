@@ -3,7 +3,8 @@
   "version": "0.0.1",
   "description": "tictactoe react",
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "dev": "webpack-dev-server --config ./webpack/webpack.dev.config.js"
   },
   "repository": {
     "type": "git",
