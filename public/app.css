@@ -2,6 +2,7 @@
 }
 .grid section {
   display:flex;
+  text-align: center;
 }
 .grid section span {
   flex-direction: column;
@@ -9,6 +10,7 @@
   padding: 5px;
   box-shadow: 1px 1px 1px #F2F2F2;
   border: 1px solid  #000;
+  min-width: 20px;
 }
 
 .grid section span.no-shadow {

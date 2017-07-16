@@ -7,13 +7,13 @@ export default class App extends Component {
   }
   render() {
     const Cell = (props) => {
-      const {className,style} = props
-      return <span {...{className,style}}>{props.text}</span>
+      const {className,text} = props
+      return <span {...{className}}>{text}</span>
     }
 
     const c = text => () => <Cell text={text} />
 
-    const _ = () => <Cell className="no-shadow" style={{width:12,border:'1px solid #000'}} />
+    const _ = () => <Cell className="no-shadow" />
     const H = c('H')
     const He = c('HE')
     const Li = c('Li')
