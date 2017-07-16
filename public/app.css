@@ -1,0 +1,15 @@
+.grid {
+}
+.grid section {
+  display:flex;
+}
+.grid section span {
+  flex-direction: column;
+  margin: 1px;
+  padding: 5px;
+  box-shadow: 2px 2px 2px #000;
+}
+
+.grid section span.no-shadow {
+  box-shadow: 0px 0px 0px #000;
+}
