@@ -24,12 +24,36 @@ export default class Tictactoe extends Component {
         })
       })
       return {matrix}
-    });
+    }, () => {
+
+      const win = 'XXX'
+
+      const horizontal = this.state.matrix
+        .map(row => row.join(''))
+        .indexOf(win) !== -1;
+
+      let [[f,ff,fff],[s,ss,sss],[t,tt,ttt]] = this.state.matrix
+      const vertical = [[f,s,t],[ff,ss,tt],[fff,sss,ttt]]
+        .map(row => row.join(''))
+        .indexOf(win) !== -1;
+
+      const diagonal = [[f,ss,ttt],[fff,ss,t]]
+        .map(row => row.join(''))
+        .indexOf(win) !== -1;
+
+      if (vertical || horizontal || diagonal) {
+        this.setState({
+          won: 'X'
+        })
+      }
+    })
   }
 
   render() {
-    const {matrix} = this.state;
+    const {matrix,won} = this.state;
     return (
+      <div>
+        {won ? <span>{won} won!</span> : ''}
       <Grid>
         {() => {
           return matrix
@@ -40,6 +64,7 @@ export default class Tictactoe extends Component {
             ))
         }}
       </Grid>
+      </div>
     )
   }
 }
