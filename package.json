@@ -3,6 +3,8 @@
   "version": "0.0.1",
   "description": "tictactoe react",
   "scripts": {
+    "start": "npm run build && NODE_ENV=production node server.js",
+    "build": "webpack --config webpack/webpack.prod.config.js",
     "test": "jest",
     "dev": "webpack-dev-server --config ./webpack/webpack.dev.config.js"
   },
@@ -41,6 +43,7 @@
     "webpack-dev-server": "^2.4.5"
   },
   "dependencies": {
+    "express": "^4.15.3",
     "react": "^15.5.4",
     "react-dom": "^15.5.4",
     "react-facebook-login": "^3.6.1",
@@ -49,7 +52,8 @@
     "redux": "^3.6.0",
     "redux-localstorage": "^1.0.0-rc4",
     "redux-saga": "^0.15.3",
-    "semantic-ui-react": "^0.68.4"
+    "semantic-ui-react": "^0.68.4",
+    "socket-io": "^1.0.0"
   },
   "homepage": "https://github.com/maldonadod/tictactoe#readme"
 }
