@@ -1,51 +1,73 @@
 import React, {Component} from 'react'
 import Grid from './components/Grid/Grid'
+import Column from './components/Column/Column'
 
-export default class App extends Component {
+class Cell extends Component {
+
   constructor(props) {
     super(props)
+    this.onClick = this.onClick.bind(this)
   }
+
+  onClick() {
+    this.props.onClick();
+  }
+
   render() {
-    const Cell = (props) => {
-      const {className,text} = props
-      return <span {...{className}}>{text}</span>
+    return (
+      <span onClick={this.onClick}>
+        {this.props.text}
+      </span>
+    )
+  }
+}
+
+class Tictactoe extends Component {
+  constructor(props) {
+    super(props)
+
+    this.state = {
+      matrix: [['','',''],['','',''],['','','']],
     }
+    this.onClick = this.onClick.bind(this)
+  }
 
-    const c = text => () => <Cell text={text} />
+  onClick(row, i) {
+    this.setState(prev => {
+      let matrix = prev.matrix.map((row_cells,row_index) => {
+        return row_cells.map((cell_text, cell_index) => {
+          if (row_index === row && cell_index === i) {
+            return 'X'
+          }
+          return cell_text;
+        })
+      })
+      return {matrix}
+    });
+  }
 
-    const _ = () => <Cell className="no-shadow" />
-    const H = c('H')
-    const He = c('HE')
-    const Li = c('Li')
-    const Be = c('Be')
-    const Ne = c('Ne')
-    const F = c('F')
-    const O = c('O')
-    const N = c('N')
-    const C = c('C')
-    const B = c('B')
+  render() {
+    const {matrix} = this.state;
+    return (
+      <Grid>
+        {() => {
+          return matrix
+            .map((c,row) => (
+              <Column key={row}>
+                {() => c.map((text,i) => <Cell text={text} onClick={() => this.onClick(row, i)} key={i} />)}
+              </Column>
+            ))
+        }}
+      </Grid>
+    )
+  }
+}
 
-    const X = c('X')
-
+export default class App extends Component {
+  render() {
     return (
       <div>
-        <section>
-          <h2>TicTaeToc</h2>
-          <Grid matrix={[
-            [_,X,_]
-            ,[_,X,_]
-            ,[O,X,O]
-          ]} />
-        </section>
-
-        <section>
-          <h2>Periodic Table</h2>
-          <Grid matrix={[
-            [H,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,He]
-            ,[Li,Be,_,_,_,_,_,_,_,_,_,_,_,B,C,N,O,F,Ne]
-            ,[H,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,He]
-          ]} />
-        </section>
+        <Tictactoe />
       </div>
     )
   }
