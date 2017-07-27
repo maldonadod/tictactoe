@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import Grid from './components/Grid/Grid'
-import Column from './components/Column/Column'
+import Row from './components/Row/Row'
 
 class Cell extends Component {
 
@@ -53,9 +53,9 @@ class Tictactoe extends Component {
         {() => {
           return matrix
             .map((c,row) => (
-              <Column key={row}>
+              <Row key={row}>
                 {() => c.map((text,i) => <Cell text={text} onClick={() => this.onClick(row, i)} key={i} />)}
-              </Column>
+              </Row>
             ))
         }}
       </Grid>
