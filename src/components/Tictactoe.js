@@ -2,50 +2,23 @@ import React, {Component} from 'react'
 import Cell from './Cell'
 import Grid from './Grid/Grid'
 import Row from './Row/Row'
+import { connect } from 'react-redux'
 
-export default class Tictactoe extends Component {
+class Tictactoe extends Component {
   constructor(props) {
     super(props)
 
-    this.state = {
-      matrix: [['','',''],['','',''],['','','']],
-    }
     this.onClick = this.onClick.bind(this)
+
+    this.state = {
+      matrix: []
+    }
   }
 
-  onClick(row, i) {
-    this.setState(prev => {
-      let matrix = prev.matrix.map((row_cells,row_index) => {
-        return row_cells.map((cell_text, cell_index) => {
-          if (row_index === row && cell_index === i) {
-            return 'X'
-          }
-          return cell_text;
-        })
-      })
-      return {matrix}
-    }, () => {
-
-      const win = 'XXX'
-
-      const horizontal = this.state.matrix
-        .map(row => row.join(''))
-        .indexOf(win) !== -1;
-
-      let [[f,ff,fff],[s,ss,sss],[t,tt,ttt]] = this.state.matrix
-      const vertical = [[f,s,t],[ff,ss,tt],[fff,sss,ttt]]
-        .map(row => row.join(''))
-        .indexOf(win) !== -1;
-
-      const diagonal = [[f,ss,ttt],[fff,ss,t]]
-        .map(row => row.join(''))
-        .indexOf(win) !== -1;
-
-      if (vertical || horizontal || diagonal) {
-        this.setState({
-          won: 'X'
-        })
-      }
+  onClick(row, cell) {
+    this.props.playerMove({
+      row,
+      cell
     })
   }
 
@@ -68,3 +41,22 @@ export default class Tictactoe extends Component {
     )
   }
 }
+
+const mapStateToProp = state => {
+  return {
+    matrix: state.matrix.matrix
+  }
+}
+
+const mapDispatchToProps = dispatch => {
+  return {
+    playerMove: move => {
+      return dispatch({
+        type: 'PLAYER_MOVE',
+        move
+      })
+    }
+  }
+}
+
+export default connect(mapStateToProp,mapDispatchToProps)(Tictactoe)
