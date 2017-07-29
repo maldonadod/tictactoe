@@ -13,11 +13,23 @@ class App extends Component {
       this.props.playerName({name})
     }
   }
+
   render() {
+    const {player} = this.props
     return (
-      <div>
-        <Tictactoe />
-        <input name='player_name' type='text' onKeyDown={this.register} />
+      <div className="container">
+        {
+         player
+           ? <div><span>{player.name}</span><Tictactoe /></div>
+           :  <div className="ui segment player-register">
+                <h2>Who are you ?</h2>
+                <div className="ui input focus">
+                  <div>
+                    <input id="player-name" name='player_name' type='text' onKeyDown={this.register} />
+                  </div>
+                </div>
+              </div>
+        }
       </div>
     )
   }
@@ -34,4 +46,10 @@ const mapDispatchToProps = dispatch => {
   }
 }
 
-export default connect(null, mapDispatchToProps)(App)
+const mapStateToProp = state => {
+  return {
+    player: state.player
+  }
+}
+
+export default connect(mapStateToProp, mapDispatchToProps)(App)
