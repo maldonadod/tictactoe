@@ -14,7 +14,7 @@ function connect() {
 
 function subscribe(socket) {
   return eventChannel(emit => {
-    socket.on('matrix:state', (matrix) => {
+    socket.on('matrix:state', ({matrix}) => {
       emit(updateMatrix(matrix));
     });
     socket.on('disconnect', e => {
@@ -22,6 +22,14 @@ function subscribe(socket) {
     });
     return () => {};
   });
+}
+
+function* read(socket) {
+  const channel = yield call(subscribe, socket);
+  while (true) {
+    let action = yield take(channel);
+    yield put(action);
+  }
 }
 
 function* playerMove(socket) {
@@ -32,6 +40,7 @@ function* playerMove(socket) {
 }
 
 function* handleIO(socket) {
+  yield fork(read, socket);
   yield fork(playerMove, socket);
 }
 

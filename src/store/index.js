@@ -16,7 +16,7 @@ const storage = compose(
 
 const enhancer = compose(
   applyMiddleware(sagaMiddleware),
-  persistState(storage, 'tictactoe')
+  // persistState(storage, 'tictactoe')
 );
 
 const store = createStore(reducer, enhancer)

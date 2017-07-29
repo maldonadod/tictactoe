@@ -5,7 +5,6 @@ export default class Grid extends Component {
     super(props)
   }
   render() {
-    const {matrix=[]} = this.props
     return (<div className="grid">{
       this.props.children()
     }</div>)

@@ -1,9 +1,9 @@
 import React from 'react'
 import Grid from '../Grid/Grid'
-import Column from '../Column/Column'
+import Row from '../Row/Row'
 import {mount,shallow} from 'enzyme'
 
-describe('<Column />', () => {
+describe('<Row />', () => {
 
   var factoryWrapper;
   const Cell = () => (<a>****</a>)
@@ -11,7 +11,12 @@ describe('<Column />', () => {
   const World = () => (<a>world</a>)
 
   beforeAll(() => {
-    factoryWrapper = props => <Column {...props} />
+    const children = props => () => {
+      return props.items.map((Item,i) => <Item key={i} />)
+    }
+    factoryWrapper = props => (
+      <Row>{children(props)}</Row>
+    )
   })
 
   it('should render the child passed in', () => {

@@ -16,8 +16,6 @@ let matrix = [['','',''],['','',''],['','','']]
 
 io.on('connection', socket => {
 
-  socket.emit('matrix:state', {matrix})
-
   socket.on('player:register', user => {
 
     players.push({
@@ -25,6 +23,7 @@ io.on('connection', socket => {
       name: user.name,
       type: players.length === 0 ? 'X' : 'O'
     })
+    socket.emit('matrix:state', {matrix})
   })
 
   socket.on('player:move', ({row,cell}) => {
