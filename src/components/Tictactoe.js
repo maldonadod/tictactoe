@@ -7,12 +7,7 @@ import { connect } from 'react-redux'
 class Tictactoe extends Component {
   constructor(props) {
     super(props)
-
     this.onClick = this.onClick.bind(this)
-
-    this.state = {
-      matrix: []
-    }
   }
 
   onClick(row, cell) {
@@ -23,19 +18,17 @@ class Tictactoe extends Component {
   }
 
   render() {
-    const {matrix,won} = this.state;
+    const {matrix,won} = this.props;
     return (
       <div>
         {won ? <span>{won} won!</span> : ''}
       <Grid>
-        {() => {
-          return matrix
-            .map((c,row) => (
-              <Row key={row}>
-                {() => c.map((text,i) => <Cell text={text} onClick={() => this.onClick(row, i)} key={i} />)}
-              </Row>
-            ))
-        }}
+        {() => (matrix ? matrix
+          .map((c,row) => (
+            <Row key={row}>
+              {() => c.map((text,i) => <Cell text={text} onClick={() => this.onClick(row, i)} key={i} />)}
+            </Row>
+          )) : "")}
       </Grid>
       </div>
     )
