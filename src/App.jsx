@@ -1,11 +1,17 @@
 import React, {Component} from 'react'
 import Tictactoe from './components/Tictactoe'
 import { connect } from 'react-redux'
+import { Container, Input, Header } from 'semantic-ui-react'
 
 class App extends Component {
   constructor(props) {
     super(props)
     this.register = this.register.bind(this)
+  }
+  componentDidMount() {
+    if (this.props.player) {
+      this.props.playerName(this.props.player)
+    }
   }
   register(e) {
     if(e.keyCode == 13) {
@@ -13,21 +19,20 @@ class App extends Component {
       this.props.playerName({name})
     }
   }
-
   render() {
     const {player} = this.props
     return (
-      <div className="container">
+      <div>
         {
          player
            ? <div><span>{player.name}</span><Tictactoe /></div>
-           :  <div className="ui segment player-register">
-                <h2>Who are you ?</h2>
-                <div className="ui input focus">
-                  <div>
-                    <input id="player-name" name='player_name' type='text' onKeyDown={this.register} />
-                  </div>
-                </div>
+           :  <div className="player-register">
+                <Header>Who are you ?</Header>
+                <Input
+                  autoFocus
+                  transparent
+                  placeholder="Your Name"
+                  onKeyDown={this.register} />
               </div>
         }
       </div>
