@@ -2,6 +2,7 @@ import React, {Component} from 'react'
 import Tictactoe from './components/Tictactoe'
 import { connect } from 'react-redux'
 import { Container, Input, Header } from 'semantic-ui-react'
+import UserItem from './components/UserItem'
 
 class App extends Component {
   constructor(props) {
@@ -20,12 +21,15 @@ class App extends Component {
     }
   }
   render() {
-    const {player} = this.props
+    const {player,player_list=[]} = this.props
     return (
       <div>
         {
          player
-           ? <div><span>{player.name}</span><Tictactoe /></div>
+           ? <div>
+              {player_list.map((user,i) => user.name !== player.name ? <UserItem user={user} key={i} /> : '')}
+              <Tictactoe />
+             </div>
            :  <div className="player-register">
                 <Header>Who are you ?</Header>
                 <Input
@@ -54,6 +58,7 @@ const mapDispatchToProps = dispatch => {
 const mapStateToProp = state => {
   return {
     player: state.player
+    ,player_list: state.player_list
   }
 }
 

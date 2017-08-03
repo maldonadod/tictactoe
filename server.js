@@ -16,14 +16,27 @@ let matrix = [['','',''],['','',''],['','','']]
 
 io.on('connection', socket => {
 
+  socket.on('disconnect', () => {
+    players = players.filter(p => p.socketId !== socket.id)
+    io.sockets.emit('matrix:state', {matrix,players})
+  })
+
   socket.on('player:register', user => {
+
+    players = players.map(p => {
+      if (p.name == user.name) {
+        p.socketId = socket.id
+      }
+      return p
+    })
 
     players.push({
       socketId: socket.id,
       name: user.name,
       type: players.length === 0 ? 'X' : 'O'
     })
-    socket.emit('matrix:state', {matrix})
+
+    io.sockets.emit('matrix:state', {matrix,players})
   })
 
   socket.on('player:move', ({row,cell}) => {

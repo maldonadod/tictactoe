@@ -1,7 +1,7 @@
 import io from 'socket.io-client';
 import { fork, take, call, put, cancel } from 'redux-saga/effects';
 import { eventChannel } from 'redux-saga';
-import { updateMatrix } from '../actions'
+import { updateMatrix,updatePlayerList } from '../actions'
 
 function connect() {
   const socket = io();
@@ -14,8 +14,11 @@ function connect() {
 
 function subscribe(socket) {
   return eventChannel(emit => {
-    socket.on('matrix:state', ({matrix}) => {
+    socket.on('matrix:state', ({matrix,players}) => {
       emit(updateMatrix(matrix));
+      if (players) {
+        emit(updatePlayerList(players));
+      }
     });
     socket.on('disconnect', e => {
       // TODO: handle
