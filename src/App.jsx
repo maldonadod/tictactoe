@@ -1,8 +1,9 @@
 import React, {Component} from 'react'
 import Tictactoe from './components/Tictactoe'
-import { connect } from 'react-redux'
-import { Container, Input, Header } from 'semantic-ui-react'
+import {connect} from 'react-redux'
 import UserItem from './components/UserItem'
+import GameRequest from './components/GameRequest'
+import PlayerList from './components/PlayerList'
 
 class App extends Component {
   constructor(props) {
@@ -14,37 +15,35 @@ class App extends Component {
       this.props.playerName(this.props.player)
     }
   }
-  register(e) {
-    if(e.keyCode == 13) {
-      const name = e.target.value;
-      this.props.playerName({name})
-    }
+  register(player) {
+    this.props.playerName(player)
   }
-  render() {
-    const {player,player_list=[]} = this.props
+  renderGame() {
+    const {player,player_list} = this.props
     return (
       <div>
-        {
-         player
-           ? <div>
-              {player_list.map((user,i) => user.name !== player.name ? <UserItem user={user} key={i} /> : '')}
-              <Tictactoe />
-             </div>
-           :  <div className="player-register">
-                <Header>Who are you ?</Header>
-                <Input
-                  autoFocus
-                  transparent
-                  placeholder="Your Name"
-                  onKeyDown={this.register} />
-              </div>
-        }
+        <PlayerList players={player_list.filter(p => p.name !== player.name)} />
+        <Tictactoe />
+      </div>
+    )
+  }
+  renderWhoAreYou() {
+    return (
+      <WhoAreYou onRegister={this.register} />
+    )
+  }
+  render() {
+    const {player,game} = this.props
+    return (
+      <div>
+        {game ? <GameRequest request={game.game_request} /> : ''}
+        {player ? this.renderGame() : this.renderWhoAreYou()}
       </div>
     )
   }
 }
 
-const mapDispatchToProps = dispatch => {
+const mapDispatch = dispatch => {
   return {
     playerName: player => {
       return dispatch({
@@ -55,11 +54,12 @@ const mapDispatchToProps = dispatch => {
   }
 }
 
-const mapStateToProp = state => {
+const mapState = state => {
   return {
     player: state.player
     ,player_list: state.player_list
+    ,game: state.game
   }
 }
 
-export default connect(mapStateToProp, mapDispatchToProps)(App)
+export default connect(mapState, mapDispatch)(App)

@@ -1,7 +1,17 @@
 import io from 'socket.io-client';
 import { fork, take, call, put, cancel } from 'redux-saga/effects';
 import { eventChannel } from 'redux-saga';
-import { updateMatrix,updatePlayerList } from '../actions'
+import {
+  SET_MATRIX
+  ,SET_PLAYER_LIST
+  ,GAME_REQUEST
+  ,SHOW_CLIENT_GAME_REQUEST
+} from '../actions'
+import {
+  setPlayerList
+  ,setMatrix
+  ,showClientGameRequest
+} from '../actions'
 
 function connect() {
   const socket = io();
@@ -15,10 +25,21 @@ function connect() {
 function subscribe(socket) {
   return eventChannel(emit => {
     socket.on('matrix:state', ({matrix,players}) => {
-      emit(updateMatrix(matrix));
-      if (players) {
-        emit(updatePlayerList(players));
+      if (matrix) {
+        emit(setMatrix(matrix));
       }
+      if (players) {
+        emit(setPlayerList(players));
+      }
+    });
+    socket.on('duel:state', ({duel}) => {
+      console.log('duel: ',duel)
+    });
+    socket.on('client:game:request', ({opponent}) => {
+      const game_request = {
+        opponent
+      }
+      emit(showClientGameRequest({game_request}))
     });
     socket.on('disconnect', e => {
       // TODO: handle
@@ -42,9 +63,17 @@ function* playerMove(socket) {
   }
 }
 
+function* handleGameRequest(socket) {
+  while (true) {
+    const { players } = yield take(GAME_REQUEST);
+    socket.emit('game:request', players);
+  }
+}
+
 function* handleIO(socket) {
   yield fork(read, socket);
   yield fork(playerMove, socket);
+  yield fork(handleGameRequest, socket);
 }
 
 function* flow() {

@@ -12,13 +12,39 @@ app.get('/', function(req, res) {
 });
 
 let players = []
-let matrix = [['','',''],['','',''],['','','']]
+const duels = []
+function createMatrix() {
+  return [['','',''],['','',''],['','','']]
+}
+function createDuel(data) {
+  const {players} = data
+  const matrix = createMatrix()
+  return {
+    players
+    ,matrix
+    ,status: 'pending'
+    ,winner: {}
+    ,loser: {}
+  }
+}
+function createPlayer(data) {
+  const {socket,user} = data
+  return {
+    socketId: socket.id,
+    name: user.name,
+    type: user.type
+  }
+}
 
 io.on('connection', socket => {
 
   socket.on('disconnect', () => {
     players = players.filter(p => p.socketId !== socket.id)
-    io.sockets.emit('matrix:state', {matrix,players})
+    io.sockets.emit('matrix:state', {players})
+  })
+
+  socket.on('game:request', ([a,opponent]) => {
+    socket.broadcast.to(a.socketId).emit('client:game:request', {opponent})
   })
 
   socket.on('player:register', user => {
@@ -30,13 +56,16 @@ io.on('connection', socket => {
       return p
     })
 
-    players.push({
-      socketId: socket.id,
-      name: user.name,
-      type: players.length === 0 ? 'X' : 'O'
-    })
+    players.push(createPlayer({socket,user}))
+    io.sockets.emit('matrix:state', {players})
+  })
 
-    io.sockets.emit('matrix:state', {matrix,players})
+  socket.on('player:duel', players => {
+    const duel = createDuel({
+      players
+    })
+    duels.push(duel)
+    io.sockets.emit('duel:state', {duel})
   })
 
   socket.on('player:move', ({row,cell}) => {

@@ -1,6 +1,8 @@
+import {SET_MATRIX} from '../actions'
+
 export default function matrix(state = {}, {type,matrix}) {
   switch (type) {
-    case 'MATRIX_STATE':
+    case SET_MATRIX:
       return {matrix}
       break;
     default:
