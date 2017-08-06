@@ -11,17 +11,21 @@ class Tictactoe extends Component {
   }
 
   onClick(row, cell) {
-    this.props.playerMove({
+    const {room} = this.props.game
+    const move = {
       row,
       cell
+    }
+    this.props.playerMove({
+      move
+      ,room
     })
   }
 
   render() {
-    const {matrix,won} = this.props;
+    const {matrix} = this.props.game;
     return (
       <div>
-        {won ? <span>{won} won!</span> : ''}
       <Grid>
         {() => (matrix ? matrix
           .map((c,row) => (
@@ -38,15 +42,16 @@ class Tictactoe extends Component {
 const mapStateToProp = state => {
   return {
     matrix: state.matrix.matrix
+    ,game: state.game
   }
 }
 
 const mapDispatchToProps = dispatch => {
   return {
-    playerMove: move => {
+    playerMove: move_request => {
       return dispatch({
-        type: 'PLAYER_MOVE',
-        move
+        type: 'PLAYER_MOVE'
+        ,move_request
       })
     }
   }
