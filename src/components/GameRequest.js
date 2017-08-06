@@ -10,8 +10,8 @@ class GameRequest extends Component {
     this.accept = this.accept.bind(this)
   }
   reject() {
-    this.props.reject(this.props.opponent)
-
+    const {player,room} = this.props
+    this.props.reject({player,room})
   }
   accept() {
     this.props.accept(this.props.opponent)
@@ -40,7 +40,7 @@ class GameRequest extends Component {
 const mapDispatch = dispatch => {
   return {
     accept: opponent => dispatch(acceptGameRequest(opponent)),
-    reject: opponent => dispatch(rejectGameRequest(opponent))
+    reject: request => dispatch(rejectGameRequest(request))
   }
 }
 
