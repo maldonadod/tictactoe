@@ -11,21 +11,11 @@ app.get('/', function(req, res) {
   res.sendFile(`${__dirname}/public/index.html`);
 });
 
+let games = {}
 let players = []
 const duels = []
 function createMatrix() {
   return [['','',''],['','',''],['','','']]
-}
-function createDuel(data) {
-  const {players} = data
-  const matrix = createMatrix()
-  return {
-    players
-    ,matrix
-    ,status: 'pending'
-    ,winner: {}
-    ,loser: {}
-  }
 }
 function createPlayer(data) {
   const {socket,user} = data
@@ -35,7 +25,6 @@ function createPlayer(data) {
     type: user.type
   }
 }
-
 io.on('connection', socket => {
 
   socket.on('disconnect', () => {
@@ -43,46 +32,48 @@ io.on('connection', socket => {
     io.sockets.emit('matrix:state', {players})
   })
 
-  socket.on('game:request', ([a,opponent]) => {
-    socket.broadcast.to(a.socketId).emit('client:game:request', {opponent})
+  socket.on('game:request', ({user}) => {
+    const from = players.filter(p => p.socketId === socket.id).pop()
+    const room = `${from.name}:${user.name}`
+    socket.join(room)
+    socket.broadcast.to(user.socketId).emit('client:game:request', {from})
+  })
+
+  socket.on('game:request:accept', player => {
+    const user = players.filter(p => p.socketId === socket.id).pop()
+    const room = `${player.name}:${user.name}`
+    socket.join(room)
+    const matrix = createMatrix()
+    games[room] = {
+      matrix
+      ,room
+    }
+    io.to(room).emit('game:start', games[room]);
   })
 
   socket.on('player:register', user => {
-
     players = players.map(p => {
       if (p.name == user.name) {
         p.socketId = socket.id
       }
       return p
     })
-
     players.push(createPlayer({socket,user}))
     io.sockets.emit('matrix:state', {players})
   })
 
-  socket.on('player:duel', players => {
-    const duel = createDuel({
-      players
-    })
-    duels.push(duel)
-    io.sockets.emit('duel:state', {duel})
-  })
-
-  socket.on('player:move', ({row,cell}) => {
-
-    const p = players.filter(p => p.socketId === socket.id).pop()
-    const type = p.type
-
-    matrix = matrix.map((row_cells,row_index) => {
+  socket.on('player:move', ({move,room}) => {
+    const {row,cell} = move
+    games[room]['matrix'] = games[room]['matrix'].map((row_cells,row_index) => {
       return row_cells.map((cell_text, cell_index) => {
         if (row_index === row && cell_index === cell) {
-          return type
+          return 'X'
         }
         return cell_text
       })
     })
 
-    io.sockets.emit('matrix:state', {matrix})
+    io.to(room).emit('game:start', games[room])
   })
 })
 
