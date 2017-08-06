@@ -37,7 +37,7 @@ class App extends Component {
     const {player,game_request,game} = this.props
     return (
       <div>
-        {game_request ? <GameRequest player={player} opponent={game_request.opponent} /> : ''}
+        {game_request.opponent && <GameRequest player={player} opponent={game_request.opponent} />}
         {player ? this.renderGame() : this.renderWhoAreYou()}
       </div>
     )
