@@ -6,7 +6,7 @@ class WhoAreYou extends Component {
     super(props)
     this.register = this.register.bind(this)
   }
-  register() {
+  register(e) {
     const {onRegister} = this.props
     if(e.keyCode == 13) {
       onRegister({
