@@ -8,6 +8,7 @@ import {
   ,SHOW_CLIENT_GAME_REQUEST
   ,ACCEPT_GAME_REQUEST
   ,GAME_START
+  ,REJECT_GAME_REQUEST
 } from '../actions'
 import {
   setPlayerList
@@ -38,8 +39,8 @@ function subscribe(socket) {
     socket.on('game:start', game => {
       emit(handleGameStart(game))
     });
-    socket.on('client:game:request', ({from}) => {
-      emit(showClientGameRequest(from))
+    socket.on('client:game:request', request => {
+      emit(showClientGameRequest(request))
     });
     socket.on('disconnect', e => {
       // TODO: handle
@@ -77,11 +78,19 @@ function* handleGameRequestAccept(socket) {
   }
 }
 
+function* handleGameRequestReject(socket) {
+  while (true) {
+    const { request } = yield take(REJECT_GAME_REQUEST);
+    socket.emit('game:request:reject', request);
+  }
+}
+
 function* handleIO(socket) {
   yield fork(read, socket);
   yield fork(playerMove, socket);
   yield fork(handleGameRequest, socket);
   yield fork(handleGameRequestAccept, socket);
+  yield fork(handleGameRequestReject, socket);
 }
 
 function* flow() {
