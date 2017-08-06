@@ -4,6 +4,7 @@ import {connect} from 'react-redux'
 import UserItem from './components/UserItem'
 import GameRequest from './components/GameRequest'
 import PlayerList from './components/PlayerList'
+import WhoAreYou from './components/WhoAreYou'
 
 class App extends Component {
   constructor(props) {
@@ -33,10 +34,10 @@ class App extends Component {
     )
   }
   render() {
-    const {player,game} = this.props
+    const {player,game_request,game} = this.props
     return (
       <div>
-        {game ? <GameRequest request={game.game_request} /> : ''}
+        {game_request.from && <GameRequest player={player} room={game_request.room} opponent={game_request.from} />}
         {player ? this.renderGame() : this.renderWhoAreYou()}
       </div>
     )
@@ -58,6 +59,7 @@ const mapState = state => {
   return {
     player: state.player
     ,player_list: state.player_list
+    ,game_request: state.game_request
     ,game: state.game
   }
 }

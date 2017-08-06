@@ -1,13 +1,28 @@
 const GAME_REQUEST = 'GAME_REQUEST'
 const SHOW_CLIENT_GAME_REQUEST = 'SHOW_CLIENT_GAME_REQUEST'
+const ACCEPT_GAME_REQUEST = 'ACCEPT_GAME_REQUEST'
+const REJECT_GAME_REQUEST = 'REJECT_GAME_REQUEST'
+const GAME_START = 'GAME_START'
 
-const gameRequest = players => ({
+const gameRequest = user => ({
   type: GAME_REQUEST,
-  players
+  user
 })
-const showClientGameRequest = game_request => ({
+const showClientGameRequest = request => ({
   type: SHOW_CLIENT_GAME_REQUEST,
-  game_request
+  request
+})
+const acceptGameRequest = player => ({
+  type: ACCEPT_GAME_REQUEST,
+  player
+})
+const rejectGameRequest = request => ({
+  type: REJECT_GAME_REQUEST,
+  request
+})
+const handleGameStart = game => ({
+  type: GAME_START,
+  game
 })
 
 export {
@@ -15,4 +30,10 @@ export {
   ,gameRequest
   ,SHOW_CLIENT_GAME_REQUEST
   ,showClientGameRequest
+  ,ACCEPT_GAME_REQUEST
+  ,acceptGameRequest
+  ,REJECT_GAME_REQUEST
+  ,rejectGameRequest
+  ,GAME_START
+  ,handleGameStart
 }

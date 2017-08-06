@@ -1,21 +1,47 @@
-import React from 'react'
+import React, {Component} from 'react'
+import {connect} from 'react-redux'
 import { Button, Header, Icon, Modal } from 'semantic-ui-react'
+import {acceptGameRequest,rejectGameRequest} from '../actions'
 
-const GameRequest = ({request}) => (
-  <Modal open basic size='small'>
-    <Header icon='archive' content='Game Request' />
-    <Modal.Content>
-      <p>{request.opponent.name} wants to play, accept ?</p>
-    </Modal.Content>
-    <Modal.Actions>
-      <Button basic color='red' inverted>
-        <Icon name='remove' /> No
-      </Button>
-      <Button color='green' inverted>
-        <Icon name='checkmark' /> Yes
-      </Button>
-    </Modal.Actions>
-  </Modal>
-)
+class GameRequest extends Component {
+  constructor(props) {
+    super(props)
+    this.reject = this.reject.bind(this)
+    this.accept = this.accept.bind(this)
+  }
+  reject() {
+    const {player,room} = this.props
+    this.props.reject({player,room})
+  }
+  accept() {
+    this.props.accept(this.props.opponent)
+  }
+  render() {
+    const {opponent} = this.props
+    return (
+      <Modal open basic size='small'>
+        <Header icon='archive' content='Game Request' />
+        <Modal.Content>
+          <p>{opponent.name} wants to play, accept ?</p>
+        </Modal.Content>
+        <Modal.Actions>
+          <Button onClick={this.reject} basic color='red' inverted>
+            <Icon name='remove' /> No
+          </Button>
+          <Button onClick={this.accept} color='green' inverted>
+            <Icon name='checkmark' /> Yes
+          </Button>
+        </Modal.Actions>
+      </Modal>
+    )
+  }
+}
 
-export default GameRequest
+const mapDispatch = dispatch => {
+  return {
+    accept: opponent => dispatch(acceptGameRequest(opponent)),
+    reject: request => dispatch(rejectGameRequest(request))
+  }
+}
+
+export default connect(null,mapDispatch)(GameRequest)

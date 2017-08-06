@@ -8,7 +8,8 @@ class UserItem extends Component {
     this.onClick = this.onClick.bind(this)
   }
   onClick() {
-    this.props.gameRequest([this.props.user, this.props.player])
+    const {user} = this.props
+    this.props.gameRequest(user)
   }
   render() {
     return (
@@ -24,7 +25,7 @@ const mapState = state => {
 }
 const mapDispatch = dispatch => {
   return {
-    gameRequest: players => dispatch(gameRequest(players))
+    gameRequest: player => dispatch(gameRequest(player))
   }
 }
 
