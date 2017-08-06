@@ -1,9 +1,11 @@
-import {SHOW_CLIENT_GAME_REQUEST} from '../actions'
+import {
+  GAME_START
+} from '../actions'
 
-export default function game(state = null, {type,game_request}) {
+export default function game(state = {}, {type,game}) {
   switch (type) {
-    case SHOW_CLIENT_GAME_REQUEST:
-      return {...game_request}
+    case GAME_START:
+      return {...game}
       break;
     default:
       return state
