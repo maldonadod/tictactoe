@@ -13,7 +13,6 @@ app.get('/', function(req, res) {
 
 let games = {}
 let players = []
-const duels = []
 function createMatrix() {
   return [['','',''],['','',''],['','','']]
 }
@@ -47,6 +46,11 @@ io.on('connection', socket => {
     games[room] = {
       matrix
       ,room
+      ,players: {
+        from: player
+        ,to: user
+      }
+      ,state: 'accepted'
     }
     io.to(room).emit('game:start', games[room]);
   })
