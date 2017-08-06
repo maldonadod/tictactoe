@@ -35,7 +35,18 @@ io.on('connection', socket => {
     const from = players.filter(p => p.socketId === socket.id).pop()
     const room = `${from.name}:${user.name}`
     socket.join(room)
-    socket.broadcast.to(user.socketId).emit('client:game:request', {from})
+    socket.broadcast.to(user.socketId).emit('client:game:request', {from,room})
+  })
+
+  socket.on('game:request:reject', request => {
+    const {player,room} = request
+    io.of('/').in(room).clients(function(error, clients) {
+      if (clients.length > 0) {
+        clients.forEach(socket_id => {
+          io.sockets.sockets[socket_id].leave(room);
+        });
+      }
+    });
   })
 
   socket.on('game:request:accept', player => {
