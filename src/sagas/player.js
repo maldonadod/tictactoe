@@ -27,6 +27,14 @@ function connect() {
 
 function subscribe(socket) {
   return eventChannel(emit => {
+    socket.on('matrix:state', ({matrix,players}) => {
+      if (matrix) {
+        emit(setMatrix(matrix));
+      }
+      if (players) {
+        emit(setPlayerList(players));
+      }
+    });
     socket.on('game:start', game => {
       emit(handleGameStart(game))
     });
