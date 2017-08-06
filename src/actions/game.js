@@ -8,19 +8,17 @@ const gameRequest = user => ({
   type: GAME_REQUEST,
   user
 })
-const showClientGameRequest = opponent => ({
+const showClientGameRequest = request => ({
   type: SHOW_CLIENT_GAME_REQUEST,
-  request: {
-    opponent
-  }
+  request
 })
 const acceptGameRequest = player => ({
   type: ACCEPT_GAME_REQUEST,
   player
 })
-const rejectGameRequest = game_request => ({
+const rejectGameRequest = request => ({
   type: REJECT_GAME_REQUEST,
-  game_request
+  request
 })
 const handleGameStart = game => ({
   type: GAME_START,
